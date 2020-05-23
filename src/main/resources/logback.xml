@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<!-- ch.qos.logback.core.ConsoleAppender控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder charset="UTF-8">
+			<pattern>[%-5p] [%d{HH:mm:ss}] [%-36logger{36}] %-4L - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- ch.qos.logback.core.rolling.RollingFileAppender文件输出 -->
+	<!-- 每天生产一个文件，最多保存30天，日志量最大10GB，每个日志文件最大50MB -->
+	<appender name="toFile1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>D:/logs/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>10GB</totalSizeCap>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>50MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] [%logger] %-5p %C.%M %L - %m%n</pattern>
+		</encoder>
+		<!-- ch.qos.logback.classic.filter.ThresholdFilter配置时root需加ref，则控制台与文件均有输出 -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">   
+      		<level>INFO</level>   
+    	</filter>  
+	</appender>
+	
+	<!-- 基于文件大小进行滚动，保存3个归档文件，当文件大于5MB时，生成新的日志文件 -->
+	<appender name="toFile2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>D:/logs/logbacks.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>logbacks.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>3</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] [%logger] %-5p %C.%M %L - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 控制台日志级别 -->
+	<root>
+		<level value="info" />
+		<appender-ref ref="console" />
+		<appender-ref ref="toFile1" />
+	</root>
+	
+	<!-- 输出dao层sql语句 -->
+	<logger name="com.zy.cloud.mc.dao" level="debug" />
+	<!-- 其他依赖包名日志级别过滤 -->
+	<logger name="org" level="info" />
+	
+	<!-- additivity="true"时传递给上级root输出 -->
+	<!-- <logger name="toFile1" level="info" additivity="true">
+		<appender-ref ref="toFile1" />
+	</logger> -->
+	
+	<logger name="toFile2-pub" level="warn" additivity="false">
+		<appender-ref ref="toFile2" />
+		<!-- <appender-ref ref="toFile3" /> -->
+	</logger>
+	
+</configuration>

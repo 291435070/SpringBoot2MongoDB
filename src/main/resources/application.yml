@@ -1,0 +1,46 @@
+server:
+  port: 9901
+spring:
+  application:
+    name: admin-client
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/platform
+  cloud:
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+  redis:
+    database: 0
+    host: 192.168.0.241
+    password: zyhk237@123
+    port: 6379
+    timeout: 60000
+    lettuce:
+      pool:
+        max-idle: 10
+        min-idle: 0
+        max-active: 100
+        max-wait: 10000
+  resources:
+    static-locations: classpath:/templates/
+  datasource:
+    master:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/platform?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+    slaver:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+      username: root
+      password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    io.swagger.models.parameters.AbstractSerializableParameter: error
+    com.zy.cloud.mc.dao: debug
+    com.zaxxer.hikari: debug
